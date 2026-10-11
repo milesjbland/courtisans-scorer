@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Courtisans Scorer</title>
+<meta name="description" content="A tap-to-score helper for the card game Courtisans: set each family's standing, tap the cards in your domain and get your total.">
+<meta name="theme-color" content="#1a1220" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#e0d4c3" media="(prefers-color-scheme: light)">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👑</text></svg>">
+<link rel="preload" href="fonts/gloock-latin.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+/* Self-hosted (SIL OFL 1.1) so no visitor data is sent to Google */
+@font-face {
+  font-family: 'Gloock';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(fonts/gloock-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Gloock';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(fonts/gloock-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Alegreya Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(fonts/alegreya-sans-400-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Alegreya Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(fonts/alegreya-sans-400-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Alegreya Sans';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(fonts/alegreya-sans-500-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Alegreya Sans';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(fonts/alegreya-sans-500-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Alegreya Sans';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(fonts/alegreya-sans-700-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Alegreya Sans';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(fonts/alegreya-sans-700-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Alegreya Sans SC';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(fonts/alegreya-sans-sc-700-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Alegreya Sans SC';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(fonts/alegreya-sans-sc-700-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+:root {
+  --bg: #ece3d6;
+  --bg-deep: #e0d4c3;
+  --panel: #f6efe4;
+  --line: #cbbba6;
+  --ink: #2e2134;
+  --ink-soft: #6e5c6c;
+  --gold: #9c7424;
+  --gold-deep: #7a5a17;
+  --fall: #a8382f;
+  --tile-off: rgba(46,33,52,.035);
+
+  --moth: #ece6d9;
+  --moth-line: #857a6b;
+  --toad: #737c36;
+  --hawk: #b83d34;
+  --hare: #d9b13a;
+  --stag: #2d6b48;
+  --carp: #3a72b3;
+
+  --display: "Gloock", "Didot", Georgia, serif;
+  --ui: "Alegreya Sans", "Gill Sans", "Segoe UI", system-ui, sans-serif;
+  --sc: "Alegreya Sans SC", "Alegreya Sans", "Gill Sans", system-ui, sans-serif;
+
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #241a2c;
+    --bg-deep: #1a1220;
+    --panel: #2f2338;
+    --line: #4a3a52;
+    --ink: #f0e6d2;
+    --ink-soft: #b9a8b8;
+    --gold: #d4ae5c;
+    --gold-deep: #9c7a33;
+    --fall: #c4544a;
+    --tile-off: rgba(255,255,255,.04);
+    --moth-line: #ece6d9;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #241a2c;
+  --bg-deep: #1a1220;
+  --panel: #2f2338;
+  --line: #4a3a52;
+  --ink: #f0e6d2;
+  --ink-soft: #b9a8b8;
+  --gold: #d4ae5c;
+  --gold-deep: #9c7a33;
+  --fall: #c4544a;
+  --tile-off: rgba(255,255,255,.04);
+  --moth-line: #ece6d9;
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: inherit; }
+html { height: 100%; scroll-padding-top: env(safe-area-inset-top, 0px); }
+body {
+  margin: 0;
+  min-height: 100%;
+  background:
+    radial-gradient(120% 60% at 50% 0%, var(--panel) 0%, transparent 60%) no-repeat,
+    var(--bg);
+  color: var(--ink);
+  font-family: var(--ui);
+  font-size: 16px;
+  line-height: 1.45;
+  -webkit-tap-highlight-color: transparent;
+}
+main {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 20px 12px 120px;
+}
+
+header.top {
+  text-align: center;
+  padding: 8px 0 18px;
+}
+header.top h1 {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(2.1rem, 8vw, 3rem);
+  line-height: 1;
+  margin: 0;
+  letter-spacing: .01em;
+  color: var(--gold);
+}
+header.top p {
+  margin: 6px 0 0;
+  color: var(--ink-soft);
+  font-size: .95rem;
+}
+
+section { margin-top: 18px; }
+.section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 2px 8px;
+}
+.section-head h2 {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 1.3rem;
+  margin: 0;
+}
+.section-head .hint {
+  color: var(--ink-soft);
+  font-size: .85rem;
+  text-align: right;
+}
+
+.cols {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 6px;
+}
+
+/* family headers */
+.fam-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 8px 2px 6px;
+  color: var(--fc-line, var(--fc));
+}
+.fam-head svg { width: 30px; height: 30px; }
+.fam-head span {
+  font-family: var(--sc);
+  font-weight: 700;
+  font-size: .78rem;
+  color: var(--ink);
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* the Queen's table: status toggles */
+.table-mat {
+  background: var(--bg-deep);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 4px 6px 8px;
+  position: relative;
+}
+.status {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.status button {
+  appearance: none;
+  border: 1.5px dashed color-mix(in srgb, var(--sc) 70%, transparent);
+  border-radius: 7px;
+  background: transparent;
+  color: var(--sc);
+  height: 36px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  font: inherit;
+  transition: background-color .15s, color .15s, border-color .15s;
+}
+.status button[data-s="1"] { --sc: var(--gold); }
+.status button[data-s="0"] { --sc: var(--ink-soft); }
+.status button[data-s="-1"] { --sc: var(--fall); }
+.status button svg { width: 20px; height: 20px; }
+.status button[aria-pressed="true"] {
+  border-style: solid;
+  border-color: var(--sc);
+  background-color: var(--sc);
+  background-image: repeating-linear-gradient(135deg, var(--stripe, rgba(255,255,255,.18)) 0 3px, transparent 3px 8px);
+  color: #fff;
+}
+.status button[aria-pressed="true"] svg { stroke-width: 3; }
+.status button[aria-pressed="true"][data-s="1"] { color: var(--bg-deep); --stripe: rgba(0,0,0,.12); }
+.status button[aria-pressed="true"][data-s="0"] {
+  background-color: var(--line);
+  border-color: var(--ink-soft);
+  color: var(--ink);
+  --stripe: color-mix(in srgb, var(--ink) 8%, transparent);
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px 14px;
+  margin-top: 8px;
+  color: var(--ink-soft);
+  font-size: .82rem;
+}
+.legend span { display: inline-flex; align-items: center; gap: 4px; }
+.legend svg { width: 15px; height: 15px; }
+.legend .up { color: var(--gold); }
+.legend .down { color: var(--fall); }
+
+/* domain tiles */
+.col-cards { display: flex; flex-direction: column; gap: 4px; }
+.group { display: flex; flex-direction: column; gap: 4px; }
+.group + .group { margin-top: 8px; }
+.tile {
+  appearance: none;
+  position: relative;
+  height: 40px;
+  border-radius: 7px;
+  border: 1.5px dashed color-mix(in srgb, var(--fc-line, var(--fc)) 70%, var(--ink));
+  background: var(--tile-off);
+  color: color-mix(in srgb, var(--fc-line, var(--fc)) 70%, var(--ink));
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  padding: 0;
+  font: inherit;
+  transition: background-color .12s, transform .08s, border-color .12s;
+}
+.tile svg { width: 22px; height: 22px; opacity: .9; }
+.tile:active { transform: scale(.96); }
+.tile[aria-pressed="true"] {
+  border-style: solid;
+  background-color: var(--fc);
+  background-image: repeating-linear-gradient(135deg, var(--stripe, rgba(255,255,255,.16)) 0 3px, transparent 3px 8px);
+  border-color: color-mix(in srgb, var(--fc-line, var(--fc)) 70%, var(--ink));
+  color: var(--fc-ink, #fff);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.25), inset 0 -8px 14px rgba(0,0,0,.12);
+}
+.tile[aria-pressed="true"] svg { opacity: 1; }
+.tile .x2 {
+  position: absolute;
+  top: 2px; right: 4px;
+  font-size: .62rem;
+  font-weight: 700;
+  line-height: 1;
+  opacity: .8;
+}
+
+.type-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px 14px;
+  margin: 0 0 10px;
+  color: var(--ink-soft);
+  font-size: .82rem;
+}
+.type-legend span { display: inline-flex; align-items: center; gap: 4px; }
+.type-legend svg { width: 16px; height: 16px; }
+
+/* subtotals */
+.subtotal {
+  text-align: center;
+  padding: 10px 0 4px;
+  border-top: 1px solid var(--line);
+  margin-top: 10px;
+}
+.subtotal .pts {
+  font-family: var(--display);
+  font-size: 1.45rem;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.subtotal .pts.pos { color: var(--gold); }
+.subtotal .pts.neg { color: var(--fall); }
+.subtotal .pts.zero { color: var(--ink-soft); }
+.subtotal .how {
+  display: block;
+  font-size: .74rem;
+  color: var(--ink-soft);
+  margin-top: 3px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* missions */
+.missions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.mission {
+  appearance: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1.5px dashed var(--ink-soft);
+  background: var(--tile-off);
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.mission .seal {
+  width: 26px; height: 34px;
+  border-radius: 4px;
+  flex: none;
+  background: var(--mc);
+  border: 1.5px solid var(--ink-soft);
+  display: grid; place-items: center;
+  color: var(--mc-ink);
+}
+.mission .seal svg { width: 16px; height: 16px; opacity: 0; }
+.mission b { display: block; font-weight: 700; }
+.mission small { color: var(--ink-soft); font-size: .82rem; }
+.mission .on { display: none; }
+.mission[aria-pressed="true"] .on { display: block; color: var(--ink); }
+.mission[aria-pressed="true"] .off { display: none; }
+.mission[aria-pressed="true"] {
+  border-style: solid;
+  border-color: var(--gold);
+  background-image: repeating-linear-gradient(135deg, color-mix(in srgb, var(--gold) 14%, transparent) 0 3px, transparent 3px 8px);
+}
+.mission[aria-pressed="true"] .seal { border-color: var(--ink); }
+.mission[aria-pressed="true"] .seal svg { opacity: 1; }
+.mission.white { --mc: #f2ede3; --mc-ink: #2e2134; }
+.mission.blue { --mc: #4f7fc0; --mc-ink: #fff; }
+
+/* sticky total */
+.totalbar {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  background: color-mix(in srgb, var(--bg-deep) 92%, transparent);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-top: 1px solid var(--line);
+  z-index: 10;
+}
+.totalbar .inner {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.totalbar .label { flex: 1; min-width: 0; }
+.totalbar .label b {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 1.05rem;
+  display: block;
+}
+.totalbar .label small {
+  color: var(--ink-soft);
+  font-size: .82rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+}
+.totalbar .total {
+  font-family: var(--display);
+  font-size: 2.3rem;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  min-width: 2ch;
+  text-align: right;
+}
+.totalbar .total.neg { color: var(--fall); }
+.totalbar .total.pos { color: var(--gold); }
+.btn-clear {
+  appearance: none;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--ink);
+  border-radius: 999px;
+  padding: 8px 14px;
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+}
+.btn-clear:hover { border-color: var(--gold); }
+
+button:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+@media (max-width: 420px) {
+  .cols { gap: 4px; }
+  .fam-head svg { width: 26px; height: 26px; }
+  .fam-head span { font-size: .7rem; }
+  .tile { height: 36px; }
+  .tile svg { width: 19px; height: 19px; }
+  .section-head .hint { display: none; }
+  .subtotal .how { font-size: .66rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}
+</style>
+</head>
+<body>
+<main>
+  <header class="top">
+    <h1>Courtisans</h1>
+    <p>Set each family's standing, then tap the cards in your domain.</p>
+  </header>
+
+  <section aria-labelledby="h-table">
+    <div class="section-head">
+      <h2 id="h-table">The Queen's table</h2>
+      <span class="hint">Reveal spies first, nobles count as 2</span>
+    </div>
+    <div class="table-mat">
+      <div class="cols" id="heads"></div>
+      <div class="cols" id="statuses"></div>
+    </div>
+    <div class="legend">
+      <span class="up"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg>Esteemed, +1 a card</span>
+      <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 12h12"/></svg>Neutral, 0</span>
+      <span class="down"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>Fallen from grace, −1 a card</span>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-domain">
+    <div class="section-head">
+      <h2 id="h-domain">Your domain</h2>
+      <span class="hint">Spies count once revealed</span>
+    </div>
+    <div class="type-legend" id="typeLegend"></div>
+    <div class="cols" id="cards"></div>
+  </section>
+
+  <section aria-labelledby="h-missions">
+    <div class="section-head">
+      <h2 id="h-missions">Secret missions</h2>
+      <span class="hint">+3 each if fulfilled</span>
+    </div>
+    <div class="missions">
+      <button class="mission white" data-m="white" aria-pressed="false">
+        <span class="seal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7"/></svg></span>
+        <span><b>White mission</b><small class="off">Not fulfilled</small><small class="on">Fulfilled, +3</small></span>
+      </button>
+      <button class="mission blue" data-m="blue" aria-pressed="false">
+        <span class="seal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7"/></svg></span>
+        <span><b>Blue mission</b><small class="off">Not fulfilled</small><small class="on">Fulfilled, +3</small></span>
+      </button>
+    </div>
+  </section>
+</main>
+
+<div class="totalbar">
+  <div class="inner">
+    <div class="label">
+      <b>Your score</b>
+      <small id="breakdown">Tap cards to begin</small>
+    </div>
+    <div class="total" id="total">0</div>
+    <button class="btn-clear" id="clear">Clear</button>
+  </div>
+</div>
+
+<script>
+(() => {
+  const SVG = (inner, sw = 1.6) =>
+    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${inner}</svg>`;
+
+  // Order matches the Queen's table mat
+  const FAMILIES = [
+    { id: 'moth', name: 'Butterfly', ink: '#2e2134', icon:
+      '<path d="M12 7c1.2 0 1.8 1.4 1.8 3.4v4.8c0 2.6-.8 4.6-1.8 5.3-1-.7-1.8-2.7-1.8-5.3v-4.8C10.2 8.4 10.8 7 12 7z"/><path d="M10.6 13.4l1.4 1 1.4-1M10.7 16.4l1.3 1 1.3-1"/><path d="M11.2 7.2C10.8 5.6 9.8 4.4 8.6 4.4M12.8 7.2c.4-1.6 1.4-2.8 2.6-2.8"/><path d="M10.2 9.2C7.4 6.8 3.2 6.2 2 8.2c1 2.8 4.8 4.4 8.2 4.4M13.8 9.2c2.8-2.4 7-3 8.2-1M22 8.2c-1 2.8-4.8 4.4-8.2 4.4"/><path d="M4.4 8.6l5.4 2.4M19.6 8.6l-5.4 2.4"/><path d="M10.2 13.6c-2.6.8-5 3.2-4.2 5.2 2 .5 3.6-1.2 4.4-3M13.8 13.6c2.6.8 5 3.2 4.2 5.2-2 .5-3.6-1.2-4.4-3"/>' },
+    { id: 'toad', name: 'Toad', icon:
+      '<path d="M12 7.5c-2.9 0-4.8 2.2-4.8 5.3S9.1 18.5 12 18.5s4.8-2.6 4.8-5.7S14.9 7.5 12 7.5z"/><circle cx="9.6" cy="7.8" r="1.6"/><circle cx="14.4" cy="7.8" r="1.6"/><path d="M12 10.8l2 2-2 2-2-2z"/><path d="M7.5 11l-2.6-1-1-2.2M4.9 10L3.2 10.6M16.5 11l2.6-1 1-2.2M19.1 10l1.7.6"/><path d="M7.8 16.2c-2 0-3.8.6-4.3 2.4l-.6 1.8M3.5 19l1.8 1.2M16.2 16.2c2 0 3.8.6 4.3 2.4l.6 1.8M20.5 19l-1.8 1.2"/>' },
+    { id: 'hawk', name: 'Nightingale', icon:
+      '<path d="M9.4 11.4c-.2-1.6-1.4-2.7-2.9-2.7-1.6 0-2.8 1.2-2.9 2.8L2.4 12.6l1.4.3c.4 1.4 1.1 2.6 1.4 3.7.8 2.2 3 3.4 5.6 3.4 2 0 3.6-.8 4.6-2l6.2 1.2-5.4-4.4"/><circle cx="6.3" cy="10.9" r=".8" fill="currentColor"/><path d="M9.6 13.2c.2-3.4 1.8-6.8 4.4-8.8.1 1.4.4 2.5 1 3.3.8-1.6 2-2.8 3.6-3.5-.2 1.6 0 3 .6 4 1-.8 2.2-1.2 3.4-1.2-1.2 3-4 5.6-8.3 6.6"/><path d="M9 19.8l-.4 1.9M11.6 20l.2 1.8"/>' },
+    { id: 'hare', name: 'Hare', icon:
+      '<path d="M10.8 9.6c1-1 2.6-1.6 4.2-1.6 3.4 0 6 2.6 6 6s-2.6 6-6 6H8.6"/><path d="M10.4 14.4c-.6.3-1.3.4-2 .4-2 0-3.6-1.4-3.6-3.2 0-2 1.6-3.6 3.6-3.6 1.4 0 2.6.8 3.2 2"/><path d="M8.4 8.2C7.6 5.6 7.8 3 8.8 2.6c1 .4 1.6 2.8 1.4 5.6M10.4 8.6c.6-2.6 1.8-4.6 3-4.6.6.9-.1 3-1.6 5.2"/><path d="M10 14.6l-.8 5.4"/><path d="M21 13.6c.8.1 1.3.7 1.2 1.5"/><circle cx="7.6" cy="10.8" r=".8" fill="currentColor"/>' },
+    { id: 'stag', name: 'Stag', icon:
+      '<path d="M10.5 21c.3-3-.5-5.5-2.5-7.5S4.5 10 4.5 6.3M6.7 11.4c-1.5-.8-3.1-1-4.2-.6M5.1 8.8c1-.8 1.4-2.2 1.3-3.6M8.1 13.6c1.5-1.3 2-3 1.8-4.8"/><path d="M13.5 21c-.3-3 .5-5.5 2.5-7.5s3.5-3.5 3.5-7.2M17.3 11.4c1.5-.8 3.1-1 4.2-.6M18.9 8.8c-1-.8-1.4-2.2-1.3-3.6M15.9 13.6c-1.5-1.3-2-3-1.8-4.8"/>' },
+    { id: 'carp', name: 'Carp', icon:
+      '<path d="M2.5 13.5C3.5 9.5 8 7.5 12 8c2.5.3 4.3 1.3 5.6 2.6L21 7l-.6 4.6 1.6 4.2-4.4-2.2c-1.6 2-4.6 3.6-8.2 3.4-3.4-.2-6-1.4-6.9-3.5z"/><path d="M8.6 8.2l2.2-3 3 3.4M8.8 16.9l-.4 3.2 2.8-2.8M6.6 9.6c1 2 1 4.6 0 6.6M2.8 14.2l-1.4 1.8"/><circle cx="4.8" cy="11.8" r=".8" fill="currentColor"/>' },
+  ];
+
+  // Card types per family: 4 nobles, 4 plain courtiers, 3 guards, 2 assassins, 2 spies (15 total)
+  const TYPES = [
+    { id: 'noble',    name: 'Noble',    count: 4, value: 2, icon: '<path d="M3.5 18.5h17M4.5 18.5L3 8l5 4 4-7 4 7 5-4-1.5 10.5"/>' },
+    { id: 'courtier', name: 'Courtier', count: 4, value: 1, icon: '<path d="M12 5.5l5 6.5-5 6.5L7 12z"/>' },
+    { id: 'guard',    name: 'Guard',    count: 3, value: 1, icon: '<path d="M12 3l7 2.8v5.4c0 4.8-3 8-7 9.8-4-1.8-7-5-7-9.8V5.8z"/>' },
+    { id: 'assassin', name: 'Assassin', count: 2, value: 1, icon: '<path d="M12 2.5l1.8 3.2v8.8h-3.6V5.7z"/><path d="M7 14.5h10M12 14.5v5"/><circle cx="12" cy="20.8" r="1.1"/>' },
+    { id: 'spy',      name: 'Spy',      count: 2, value: 1, icon: '<path d="M2.5 9.2c3-2 6.5-2 9.5 0 3-2 6.5-2 9.5 0 0 5-3 7.3-6 7.3-2 0-3.5-2-3.5-2s-1.5 2-3.5 2c-3 0-6-2.3-6-7.3z"/><circle cx="7.6" cy="11.4" r="1.3"/><circle cx="16.4" cy="11.4" r="1.3"/>' },
+  ];
+
+  const STATUS_ICONS = {
+    '1':  SVG('<path d="M6 15l6-6 6 6"/>', 2.2),
+    '0':  SVG('<path d="M6 12h12"/>', 2.2),
+    '-1': SVG('<path d="M6 9l6 6 6-6"/>', 2.2),
+  };
+  const STATUS_NAMES = { '1': 'Esteemed', '0': 'Neutral', '-1': 'Fallen from grace' };
+
+  const KEY = 'courtisans-scorer-v1';
+  const blank = () => ({
+    status: Object.fromEntries(FAMILIES.map(f => [f.id, 0])),
+    cards: Object.fromEntries(FAMILIES.map(f => [f.id, Object.fromEntries(TYPES.map(t => [t.id, 0]))])),
+    missions: { white: false, blue: false },
+  });
+
+  let state = blank();
+  try {
+    const saved = JSON.parse(localStorage.getItem(KEY) || 'null');
+    if (saved && saved.status && saved.cards) {
+      for (const f of FAMILIES) {
+        if ([-1, 0, 1].includes(saved.status[f.id])) state.status[f.id] = saved.status[f.id];
+        for (const t of TYPES) {
+          const n = saved.cards[f.id] && saved.cards[f.id][t.id];
+          if (Number.isInteger(n)) state.cards[f.id][t.id] = Math.max(0, Math.min(t.count, n));
+        }
+      }
+      if (saved.missions) state.missions = {
+        white: saved.missions.white === true || !!(saved.missions.white && saved.missions.white.done),
+        blue: saved.missions.blue === true || !!(saved.missions.blue && saved.missions.blue.done),
+      };
+    }
+  } catch (e) { /* storage unavailable; start fresh */ }
+
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} };
+
+  // Build UI
+  const heads = document.getElementById('heads');
+  const statuses = document.getElementById('statuses');
+  const cards = document.getElementById('cards');
+  const typeLegend = document.getElementById('typeLegend');
+
+  typeLegend.innerHTML = TYPES.map(t =>
+    `<span>${SVG(t.icon)}${t.name}${t.value === 2 ? ' (counts as 2)' : ''}</span>`).join('');
+
+  for (const f of FAMILIES) {
+    const fc = `var(--${f.id})`;
+
+    const h = document.createElement('div');
+    h.className = 'fam-head';
+    const paint = el => {
+      el.style.setProperty('--fc', fc);
+      if (f.ink) el.style.setProperty('--fc-ink', f.ink);
+      if (f.id === 'moth') {
+        el.style.setProperty('--fc-line', 'var(--moth-line)');
+        el.style.setProperty('--stripe', 'rgba(46,33,52,.1)');
+      }
+    };
+    paint(h);
+    h.innerHTML = `${SVG(f.icon)}<span>${f.name}</span>`;
+    heads.appendChild(h);
+
+    const s = document.createElement('div');
+    s.className = 'status';
+    s.setAttribute('role', 'group');
+    s.setAttribute('aria-label', `${f.name} standing`);
+    for (const v of ['1', '0', '-1']) {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.dataset.f = f.id;
+      b.dataset.s = v;
+      b.title = `${f.name}: ${STATUS_NAMES[v]}`;
+      b.setAttribute('aria-label', `${f.name} ${STATUS_NAMES[v]}`);
+      b.innerHTML = STATUS_ICONS[v];
+      s.appendChild(b);
+    }
+    statuses.appendChild(s);
+
+    const col = document.createElement('div');
+    col.className = 'col-cards';
+    paint(col);
+    for (const t of TYPES) {
+      const g = document.createElement('div');
+      g.className = 'group';
+      for (let i = 0; i < t.count; i++) {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'tile';
+        b.dataset.f = f.id;
+        b.dataset.t = t.id;
+        b.dataset.i = i;
+        b.setAttribute('aria-label', `${f.name} ${t.name} ${i + 1}`);
+        b.innerHTML = SVG(t.icon) + (t.value === 2 ? '<span class="x2">×2</span>' : '');
+        g.appendChild(b);
+      }
+      col.appendChild(g);
+    }
+    const sub = document.createElement('div');
+    sub.className = 'subtotal';
+    sub.innerHTML = `<span class="pts zero" data-pts="${f.id}">0</span><span class="how" data-how="${f.id}">—</span>`;
+    col.appendChild(sub);
+    cards.appendChild(col);
+  }
+
+  const fmt = n => n > 0 ? `+${n}` : n < 0 ? `−${Math.abs(n)}` : '0';
+
+  function familyCount(fid) {
+    return TYPES.reduce((sum, t) => sum + state.cards[fid][t.id] * t.value, 0);
+  }
+
+  function render() {
+    // status buttons
+    statuses.querySelectorAll('button').forEach(b => {
+      b.setAttribute('aria-pressed', String(state.status[b.dataset.f] === Number(b.dataset.s)));
+    });
+    // tiles: fill the first n of each type
+    cards.querySelectorAll('.tile').forEach(b => {
+      const n = state.cards[b.dataset.f][b.dataset.t];
+      b.setAttribute('aria-pressed', String(Number(b.dataset.i) < n));
+    });
+    // missions
+    document.querySelectorAll('.mission').forEach(b => {
+      b.setAttribute('aria-pressed', String(state.missions[b.dataset.m]));
+    });
+    const missions = (state.missions.white ? 3 : 0) + (state.missions.blue ? 3 : 0);
+
+    let domain = 0, cardsTotal = 0;
+    for (const f of FAMILIES) {
+      const n = familyCount(f.id);
+      const st = state.status[f.id];
+      const pts = n * st;
+      domain += pts;
+      cardsTotal += TYPES.reduce((s, t) => s + state.cards[f.id][t.id], 0);
+      const ptsEl = cards.querySelector(`[data-pts="${f.id}"]`);
+      ptsEl.textContent = fmt(pts);
+      ptsEl.className = 'pts ' + (pts > 0 ? 'pos' : pts < 0 ? 'neg' : 'zero');
+      cards.querySelector(`[data-how="${f.id}"]`).textContent =
+        n === 0 ? '—' : `${n} × ${st === 0 ? '0' : fmt(st)}`;
+    }
+    const total = domain + missions;
+
+    const totalEl = document.getElementById('total');
+    totalEl.textContent = total < 0 ? `−${Math.abs(total)}` : String(total);
+    totalEl.className = 'total ' + (total > 0 ? 'pos' : total < 0 ? 'neg' : '');
+
+    const bd = document.getElementById('breakdown');
+    if (cardsTotal === 0 && missions === 0) {
+      bd.textContent = 'Tap cards to begin';
+    } else {
+      bd.textContent = `${cardsTotal} card${cardsTotal === 1 ? '' : 's'}: ${fmt(domain)}` +
+        (missions ? `, missions +${missions}` : '');
+    }
+    save();
+  }
+
+  // Interactions
+  statuses.addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    state.status[b.dataset.f] = Number(b.dataset.s);
+    render();
+  });
+
+  cards.addEventListener('click', e => {
+    const b = e.target.closest('.tile'); if (!b) return;
+    const { f, t } = b.dataset;
+    const i = Number(b.dataset.i);
+    const n = state.cards[f][t];
+    // Tapping a lit tile at the top of the stack turns it off; otherwise fill up to and including this tile
+    state.cards[f][t] = (i < n) ? (i === n - 1 ? n - 1 : i + 1) : i + 1;
+    render();
+  });
+
+  document.querySelectorAll('.mission').forEach(b => b.addEventListener('click', () => {
+    state.missions[b.dataset.m] = !state.missions[b.dataset.m];
+    render();
+  }));
+
+  document.getElementById('clear').addEventListener('click', () => {
+    state = blank();
+    render();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
